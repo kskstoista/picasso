@@ -4,5 +4,7 @@
     <string name="app_name">Picasso</string>
     <string name="hello_world">Hello Picasa</string>
     <string name="menu_settings">Settings</string>
+    <string name="title_activity_picasa_album">PicasaAlbum</string>
+    <string name="title_activity_picasa_image_view">PicasaImageView</string>
 
 </resources>
