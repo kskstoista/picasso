@@ -14,9 +14,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Theme.Sherlock" >
         <activity
-            android:name="com.my.picasso.PicasaMain"
+            android:name="com.my.picasso.PicasaMainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.my.picasso.PicasaAlbum"
+            android:name="com.my.picasso.PicasaAlbumActivity"
             android:label="@string/title_activity_picasa_album"
             android:parentActivityName="android.app.ListActivity" >
             <meta-data
@@ -33,8 +33,12 @@
                 android:value="android.app.ListActivity" />
         </activity>
         <activity
-            android:name="com.my.picasso.PicasaImageView"
+            android:name="com.my.picasso.PicasaImageViewActivity"
             android:label="@string/title_activity_picasa_image_view" >
+        </activity>
+        <activity
+            android:name="com.my.picasso.PicasaLoginActivity"
+            android:label="@string/title_activity_picasa_login" >
         </activity>
     </application>
 
