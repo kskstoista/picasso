@@ -5,6 +5,7 @@ package com.my.picasso;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 
@@ -44,6 +45,7 @@ public class PicasaMainActivity extends SherlockActivity {
           });
         
         
+        
 		googleKey = getAuthString();
 		
 
@@ -77,6 +79,8 @@ public class PicasaMainActivity extends SherlockActivity {
 	
 	public String getAuthString(){
 	    String googleKey = "";
+	    SharedPreferences sp = getPreferences(MODE_PRIVATE);
+	    googleKey = sp.getString("gauth","");
 		return googleKey;
 	}
 	@Override
@@ -87,6 +91,9 @@ public class PicasaMainActivity extends SherlockActivity {
         if(data.getExtras().containsKey("AUTH")){
             googleKey = data.getStringExtra("AUTH");
             Log.d("Activityresult","Auth got");
+            SharedPreferences sp = getPreferences(MODE_PRIVATE);
+    	    sp.edit().putString("gauth",googleKey).commit();
+    	    
             startAlbumlistView(googleKey);
         }
 	}
@@ -94,10 +101,17 @@ public class PicasaMainActivity extends SherlockActivity {
 	
 	 @Override
 	 public boolean onCreateOptionsMenu(Menu menu) {
+		 if(getPreferences(MODE_PRIVATE).getString("gauth","") == ""){
 	        menu.add("Login")
-	            //.setIcon(R.drawable.ic_compose)
-	            .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	        //.setIcon(R.drawable.ic_compose)
+	        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        return true;
+		 }else{
+			 menu.add("Logout")
+		        //.setIcon(R.drawable.ic_compose)
+		        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		        return true; 
+		 }
 	 }
 
 	 @Override
@@ -113,6 +127,8 @@ public class PicasaMainActivity extends SherlockActivity {
 	        	 googleKey = "";
 	        	 item.setTitle("Login");
 	        	 PicasaListAdapter adapter = new PicasaListAdapter(this);
+	        	 SharedPreferences sp = getPreferences(MODE_PRIVATE);
+	     	     sp.edit().putString("gauth","").commit();
 	             albumList.setAdapter(adapter); 
 	        	 return true;
 	         }
