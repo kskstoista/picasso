@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+       xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" >
+ 
+       <TextView
+          android:id="@+id/listAlbumtitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5dp"
+          android:maxLines="4"
+          android:text="The List item description"
+          android:textSize="14sp" />
+ 
+</RelativeLayout>

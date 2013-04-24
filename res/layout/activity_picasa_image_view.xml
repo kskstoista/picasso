@@ -1,0 +1,19 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:gravity="center"
+    tools:context=".PicasaImageViewActivity" >
+
+   <ImageView
+        android:id="@+id/picasa_image"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
+</LinearLayout>
