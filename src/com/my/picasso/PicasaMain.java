@@ -44,12 +44,17 @@ public class PicasaMain extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_picasa_main);
-		 googleKey = getAuthString();
+		googleKey = getAuthString();
 		
         if(googleKey != ""){
-        	ad = new AlbumListDownloader(this);
-        	ad.execute(googleKey);
-        	
+        	PicasaListAdapter adapter = new PicasaListAdapter(this);
+            this.setListAdapter(adapter);                                    
+
+            AlbumListDownloader loadPicData = new AlbumListDownloader(adapter,
+                                 "https://picasaweb.google.com/data/feed/api/user/default/",
+                                 googleKey);
+             loadPicData.execute();   
+             Log.d("PicasaAlbum","Displayed");
             Log.d("Main","Oncreate finish");
         }
 }
@@ -72,11 +77,10 @@ public class PicasaMain extends ListActivity {
 
 	@Override
 	 protected void onListItemClick(ListView l, View v, int position, long id) {
-		 Toast wrongToast = Toast.makeText(this, "Clicked "+albumNames[position]+" ID:"+albumIds[position], Toast.LENGTH_SHORT);
-			wrongToast.show();
+		Log.d("Album",((PicasaEntry)this.getListAdapter().getItem(position)).getTitle());
          Intent startAlbum = new Intent(this,PicasaAlbum.class);
-         startAlbum.putExtra("ALBUM_NAME",albumNames[position] );
-         startAlbum.putExtra("ALBUM_ID",albumIds[position] );
+         startAlbum.putExtra("ALBUM_NAME",((PicasaEntry)this.getListAdapter().getItem(position)).getTitle() );
+         startAlbum.putExtra("ALBUM_ID",((PicasaEntry)this.getListAdapter().getItem(position)).getSummary() );
          startAlbum.putExtra("AUTH",googleKey );
          startActivity(startAlbum);
 	 }
