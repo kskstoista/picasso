@@ -31,8 +31,8 @@ public class PicasaAlbumActivity extends ListActivity {
 		albumId  = ntent.getStringExtra("ALBUM_ID");
 		googleKey  = ntent.getStringExtra("AUTH");
 				
-		Toast t = Toast.makeText(this, "Album "+albumName+" ID:"+albumId, Toast.LENGTH_SHORT);
-		t.show();
+		//Toast t = Toast.makeText(this, "Album "+albumName+" ID:"+albumId, Toast.LENGTH_SHORT);
+		//t.show();
 	    PicasaListAdapter adapter = new PicasaListAdapter(this);
         this.setListAdapter(adapter);                                    
 

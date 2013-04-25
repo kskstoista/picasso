@@ -27,8 +27,8 @@ public class PicasaImageViewActivity extends Activity {
 		
 		ImageDownloader id = new ImageDownloader();
 		id.download(imageUrl,(ImageView) findViewById(R.id.picasa_image));
-		Toast t = Toast.makeText(this, "Picature "+imageName+" Summary:"+imageSummary, Toast.LENGTH_SHORT);
-		t.show();
+		//Toast t = Toast.makeText(this, "Picature "+imageName+" Summary:"+imageSummary, Toast.LENGTH_SHORT);
+		//t.show();
 	}
 
 	@Override

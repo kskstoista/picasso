@@ -66,11 +66,15 @@ public class PicasaLoginActivity extends Activity {
 	            } catch (IOException e) {
     	    		e.printStackTrace();
 	            }
-	    }
-		Log.d("main", "authentiated");
+	        }else{
+	    		googleKey = "";
+	    		((TextView)findViewById(R.id.passwordEditText)).setText("");
+	        }
+		    Log.d("main", "authentication");
     	}catch (Exception e){
     		e.printStackTrace();	
     	}
+        Log.d("Picasalogin",googleKey);
         if( googleKey != ""){
         	Intent i = getIntent();
        	    i.putExtra("AUTH", googleKey);
