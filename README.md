@@ -8,6 +8,11 @@ External library used:
 ======================
 ActionbarSherlock : http://actionbarsherlock.com/
 
+NOTE!:
+======
+If you wan to build the project you need actionbarsherlock under your workspace!!!
+Local setup was "JakeWharton-ActionBarSherlock-c47975f" directory on the same level as Picasso directory.
+
 Fatures
 =======
 
