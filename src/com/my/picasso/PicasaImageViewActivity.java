@@ -12,7 +12,7 @@ public class PicasaImageViewActivity extends Activity {
 
 	
 	private String imageUrl;
-	private String imageName;
+    private String imageName;
 	private String imageSummary;
 	
 	@Override
@@ -25,10 +25,10 @@ public class PicasaImageViewActivity extends Activity {
 		imageName  = intent.getStringExtra("IMAGE_NAME");
 		imageSummary  = intent.getStringExtra("IMAGE_SUMMARY");
 		
-		ImageDownloader id = new ImageDownloader();
-		id.download(imageUrl,(ImageView) findViewById(R.id.picasa_image));
-		//Toast t = Toast.makeText(this, "Picature "+imageName+" Summary:"+imageSummary, Toast.LENGTH_SHORT);
-		//t.show();
+		Toast t = Toast.makeText(this, "Image:"+imageSummary, Toast.LENGTH_SHORT);
+		t.show();
+		ImageDownloader id = new ImageDownloader(imageUrl,(ImageView) findViewById(R.id.picasa_image));
+		id.execute();
 	}
 
 	@Override

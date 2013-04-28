@@ -85,15 +85,12 @@ public class AlbumPicturesDownloader extends AsyncTask<Void, Void, ArrayList<Pic
     {
 	  ArrayList<PicasaEntry> pictList = new  ArrayList<PicasaEntry>();
       try {
-        // set xml vars
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db         = dbf.newDocumentBuilder();
         InputSource is             = new InputSource();
-
-        // import the xml
         is.setCharacterStream(new StringReader(xml));
 
-        // parse xml,get all album entries and create arrays to hold further data
+ 
         Document doc     = db.parse(is);
         NodeList entries = doc.getElementsByTagName("entry");
         Node   temp;
@@ -109,8 +106,6 @@ public class AlbumPicturesDownloader extends AsyncTask<Void, Void, ArrayList<Pic
         			                      temp.getAttributes().item(1).getNodeValue());
         	//thumbnail URL
         	temp = element.getElementsByTagName("media:group").item(0);
-        	//Log.d("thumbneil?",""+temp.getChildNodes().item(5).getAttributes().item(1).getNodeValue());
-        	//Log.d("Process","Thumbnail"+temp.getNodeName());
         	Log.d("ProcessPictures","sdfurl:"+p.getUrl() );
        	pictList.add(p);
         }

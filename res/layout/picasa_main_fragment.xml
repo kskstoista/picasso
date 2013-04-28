@@ -5,11 +5,10 @@
     android:orientation="vertical"
     tools:context=".PicasaMainActivity" >
     
-    <fragment android:name="com.my.picasso.PicassoMainFragment"
-              android:id="@+id/main_fragment"
-              android:layout_weight="1"
-              android:layout_width="match_parent"
-              android:layout_height="0dip" />
-
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    />
 
 </LinearLayout>

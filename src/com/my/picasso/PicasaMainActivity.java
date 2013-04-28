@@ -8,70 +8,69 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.view.View;
 
-import android.widget.AdapterView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockActivity;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.my.picasso.AlbumListDownloader;
 
-public class PicasaMainActivity extends SherlockActivity {
+public class PicasaMainActivity extends SherlockFragmentActivity 
+      implements PicassoMainFragment.OnAlbumClickedListener{
 
-	private String    googleKey;
-	private ListView  albumList;
-	private int       runingPictureNumber = 0;
-	private MenuItem  loginButton;
+	private String              googleKey;
+	private int                 runingPictureNumber = 0;
+	private MenuItem            loginButton;
+	private PicassoMainFragment albumListFragment;
+	private boolean             albumsdisplayed = true;
+	PicasaListAdapter           albumAdapter;
+	PicasaListAdapter           picturesAdapter;
+	
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_picasa_main);
-		albumList = (ListView)findViewById(R.id.album_list);
-        albumList.setOnItemClickListener(new OnItemClickListener(){
+		//Start album Fragment
+		if (findViewById(R.id.main_fragment) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            albumListFragment = new PicassoMainFragment();
+            albumListFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_fragment, albumListFragment).commit();
+        }
+		//Read out saved authentication string
+		googleKey =  getAuthString();
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Log.d("Clicked","Item"+arg2);
-				Intent startAlbum = new Intent(PicasaMainActivity.this,PicasaAlbumActivity.class);
-	            startAlbum.putExtra("ALBUM_NAME",((PicasaEntry)albumList.getAdapter().getItem(arg2)).getTitle() );
-	            startAlbum.putExtra("ALBUM_ID",((PicasaEntry)albumList.getAdapter().getItem(arg2)).getSummary() );
-	            startAlbum.putExtra("AUTH",googleKey );
-	            startActivity(startAlbum);
-			}
-          });
-        
-		googleKey = getAuthString();
-
-		SharedPreferences sp = getPreferences(MODE_PRIVATE);
+		SharedPreferences sp = getPreferences(0);
 		runingPictureNumber = sp.getInt("runningPicNum",0);
 
-        if(googleKey == ""){
-        	Toast t = Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT);
-    		t.show();
-        }else{
-        	PicasaListAdapter adapter = new PicasaListAdapter(this);
-            albumList.setAdapter(adapter);                                    
+	    if(googleKey == ""){
+	        Toast t = Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT);
+	    	t.show();
+	    }else{
+            //If there is saved auth string start downloading albums
+	        albumAdapter = new PicasaListAdapter(this);
+			Log.d("Main","before setadapter"+albumListFragment+" adapter:"+albumAdapter);
+	        albumListFragment.setListAdapter(albumAdapter);                                    
 
-            AlbumListDownloader loadPicData = new AlbumListDownloader(adapter,
-                                 "https://picasaweb.google.com/data/feed/api/user/default/",
-                                 googleKey);
-            loadPicData.execute();   
-            Log.d("Main","Oncreate finish");
-        }
+	        AlbumListDownloader loadPicData = new AlbumListDownloader(albumAdapter,
+	                             "https://picasaweb.google.com/data/feed/api/user/default/",
+	                             googleKey);
+	        loadPicData.execute();   
+	    }
     }
     
 	private void startAlbumlistView(String gauth){
-		PicasaListAdapter adapter = new PicasaListAdapter(this);
-        albumList.setAdapter(adapter);                                    
+		albumAdapter = new PicasaListAdapter(this);
+        albumListFragment.setListAdapter(albumAdapter);                                    
 
-        AlbumListDownloader loadPicData = new AlbumListDownloader(adapter,
+        AlbumListDownloader loadPicData = new AlbumListDownloader(albumAdapter,
                              "https://picasaweb.google.com/data/feed/api/user/default/",
                              gauth);
          loadPicData.execute();   
@@ -85,15 +84,17 @@ public class PicasaMainActivity extends SherlockActivity {
 	    googleKey = sp.getString("gauth","");
 		return googleKey;
 	}
-	@Override
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    //super.onActivityResult(requestCode, resultCode, data);
+	    super.onActivityResult(requestCode, resultCode, data);
 	    Log.d("Activityresult","Start");
 	    if (resultCode != RESULT_OK) {
 	    	return;
 	    }
 	    switch(requestCode){
-	    //Got auth String from login Activity
+	    /*Got auth String from login Activity
+	     * change caption on login button to logout
+	     * and start downloading albums*/    
 	    case 1:
             if(data.getExtras().containsKey("AUTH")){
                 googleKey = data.getStringExtra("AUTH");
@@ -126,12 +127,12 @@ public class PicasaMainActivity extends SherlockActivity {
 	}
 
 	
-	 @Override
-	 public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 		 menu.add("Photo").setIcon(android.R.drawable.ic_menu_camera)
 	     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		 menu.add("Gallery").setIcon(android.R.drawable.ic_menu_gallery)
-	     .setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+	     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		 
 		 if(getPreferences(MODE_PRIVATE).getString("gauth","") == ""){
 	        menu.add("Login").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -141,8 +142,8 @@ public class PicasaMainActivity extends SherlockActivity {
 	     return true;
 	 }
 
-	 @Override
-	 public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 	     Log.d("click","itemid:"+item.getItemId());
 	     Log.d("click","title:"+item.getTitle());
 		 switch(item.getItemId()){    
@@ -150,7 +151,6 @@ public class PicasaMainActivity extends SherlockActivity {
 		    if(item.getTitle() == "Login") {
 	        	 Intent intent = new Intent(this, PicasaLoginActivity.class);
 	        	 startActivityForResult(intent,1);
-	        	 //item.setTitle("Logout");
 	        	 loginButton = item;
 	             return true;
 	         }else if(item.getTitle() == "Logout"){
@@ -159,7 +159,7 @@ public class PicasaMainActivity extends SherlockActivity {
 	        	 PicasaListAdapter adapter = new PicasaListAdapter(this);
 	        	 SharedPreferences sp = getPreferences(MODE_PRIVATE);
 	     	     sp.edit().putString("gauth","").commit();
-	             albumList.setAdapter(adapter); 
+	             albumListFragment.setListAdapter(adapter); 
 	        	 return true;
 	         }else if(item.getTitle() == "Gallery"){
 	        	 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -170,4 +170,36 @@ public class PicasaMainActivity extends SherlockActivity {
 	         return super.onOptionsItemSelected(item);
 		 }        
 	 }
+
+	/*Albums and Album list uses the same fragment 
+	 * only adapter is changed behind the scenes*/
+	@Override
+	public void OnAlbumClicked(PicasaEntry itemSelected) {
+		if (albumsdisplayed){
+		    albumsdisplayed = false;
+		    picturesAdapter = new PicasaListAdapter(this);
+            albumListFragment.setListAdapter(picturesAdapter); 
+            AlbumPicturesDownloader loadPicData = new AlbumPicturesDownloader(picturesAdapter,
+                       "https://picasaweb.google.com/data/feed/api/user/default/albumid/"+itemSelected.getSummary(),
+                       googleKey);
+            loadPicData.execute();   
+	    }else{
+	    	Intent startImageView = new Intent(this,PicasaImageViewActivity.class);
+	        startImageView.putExtra("IMAGE_URL",itemSelected.getUrl() );
+	        startImageView.putExtra("IMAGE_NAME",itemSelected.getTitle());
+	        startImageView.putExtra("IMAGE_SUMMARY",itemSelected.getSummary());
+	        startActivity(startImageView);
+	    }
+	}
+	
+	/*Because of same fragment handle back button*/
+	@Override
+	public void onBackPressed() {
+	    if(!albumsdisplayed){
+	    	albumsdisplayed = true;
+	    	albumListFragment.setListAdapter(albumAdapter);
+	    	return;
+	    }
+	    super.onBackPressed();
+	}
 }

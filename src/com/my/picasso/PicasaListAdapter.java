@@ -18,12 +18,12 @@ public class PicasaListAdapter extends BaseAdapter {
     private LayoutInflater mLayoutInflater;                              
     private ArrayList<PicasaEntry> mEntries = new ArrayList<PicasaEntry>();         
 
-    private final ImageDownloader mImageDownloader;                      
+    private ImageDownloader mImageDownloader;                      
 
-    public PicasaListAdapter(Context context) {                          
-       mContext = context;
+    public PicasaListAdapter(PicasaMainActivity picasamain) {                          
+       mContext = picasamain;
        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-       mImageDownloader = new ImageDownloader();
+
     }
 
     @Override
@@ -60,8 +60,9 @@ public class PicasaListAdapter extends BaseAdapter {
        TextView descriptionText = (TextView)
           itemView.findViewById(R.id.listDescription);                  
 
-       String imageUrl = mEntries.get(position).getUrl();   
-       mImageDownloader.download(imageUrl, imageView);                   
+       String imageUrl = mEntries.get(position).getUrl();
+       mImageDownloader = new ImageDownloader(imageUrl, imageView);
+       mImageDownloader.execute();                   
 
        String title = mEntries.get(position).getTitle();
        titleText.setText(title);

@@ -86,15 +86,11 @@ public class AlbumListDownloader extends AsyncTask<Void, Void, ArrayList<PicasaE
     {
 	  ArrayList<PicasaEntry> pictList = new  ArrayList<PicasaEntry>();
       try {
-        // set xml vars
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db         = dbf.newDocumentBuilder();
         InputSource is             = new InputSource();
-
-        // import the xml
         is.setCharacterStream(new StringReader(xml));
 
-        // parse xml,get all album entries and create arrays to hold further data
         Document doc     = db.parse(is);
         NodeList entries = doc.getElementsByTagName("entry");
         Node   temp;

@@ -14,7 +14,7 @@
         android:layout_marginTop="26dp"
         android:ems="10"
         android:inputType="textEmailAddress" 
-        android:text="ferenc.muskatal@gmail.com">
+        android:text="">
 
         <requestFocus />
     </EditText>
